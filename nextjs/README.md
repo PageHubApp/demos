@@ -24,20 +24,32 @@ pnpm --filter @pagehub-demos/nextjs dev   # http://localhost:4402
 | File | Role |
 | --- | --- |
 | [`app/editor/page.tsx`](./app/editor/page.tsx) | `"use client"` + `dynamic(..., { ssr: false })` — the SSR-safe loader. |
-| [`components/EditorClient.tsx`](./components/EditorClient.tsx) | `<PageHubEditor>` wiring + custom component + localStorage callbacks. |
+| [`components/EditorClient.tsx`](./components/EditorClient.tsx) | Mounts the editor via `PageHub.init()` into a ref + custom component + localStorage callbacks. |
 | [`components/ViewerClient.tsx`](./components/ViewerClient.tsx) | `<PageHubViewer>` reading saved content (after mount — localStorage is client-only). |
 | [`components/PricingCardDef.tsx`](./components/PricingCardDef.tsx) | `defineComponent` — the same def feeds editor + viewer. |
+| [`components/seed.ts`](./components/seed.ts) | Compressed starter page so the editor opens with a real drop target. |
+
+## Runtime Tailwind (required for the editor)
+
+The editor compiles Tailwind in the browser and needs two assets served at the
+site root — committed in [`public/vendor/`](./public/vendor):
+`/vendor/tailwind-browser.js` + `/vendor/daisyui-blocks.css`. `PageHub.init()`
+injects them automatically (the `<PageHubEditor>` React component does not, which
+is why the editor is mounted via `init()` here).
 
 ## Gotchas this demo encodes
 
 - **`ssr: false` lives in a Client Component.** Next forbids it inside Server
   Components, so `app/editor/page.tsx` is `"use client"`.
-- **`transpilePackages: ["@pagehub/sdk"]`** in [`next.config.js`](./next.config.js)
-  keeps the SDK's CSS-side-effect imports happy.
+- **Do NOT put `@pagehub/sdk` in `transpilePackages`.** Re-running SWC over the
+  SDK's prebuilt dist trips webpack's parser on a `super(...)` sequence expression
+  in the static-renderer chunk. Consume it as plain ESM. See [`next.config.js`](./next.config.js).
+- **`reactStrictMode: false`** — StrictMode's dev double-invoke would `init()` →
+  `destroy()` → `init()`, racing the editor's React root unmount.
 - **Read `localStorage` after mount**, never during render — see `ViewerClient`.
 
 ## Going to production
 
 Swap [`components/storage.ts`](./components/storage.ts) for `fetch()` to your API,
 and render published pages server-side with `renderToHTML(content, { components })`
-from `@pagehub/sdk/html` instead of the client viewer.
+from `@pagehub/sdk/render/static` instead of the client viewer.

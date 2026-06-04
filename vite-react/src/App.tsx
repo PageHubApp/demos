@@ -1,19 +1,47 @@
-import { useState } from "react";
-import { PageHubEditor } from "@pagehub/sdk";
+import { useEffect, useRef, useState } from "react";
+import PageHub from "@pagehub/sdk";
 import { PageHubViewer } from "@pagehub/sdk/viewer";
 import "@pagehub/sdk/editor.css";
 
 import { PricingCardDef } from "./PricingCardDef";
 import { loadPage, savePage } from "./storage";
+import { SEED_CONTENT } from "./seed";
 
-// Ship the SAME `components` array to the editor, the viewer, and the static
-// renderer — otherwise custom nodes render via the generic fallback (or break).
+// Ship the SAME `components` array to the editor and the viewer — otherwise
+// custom nodes render via the generic fallback (or break).
 const customComponents = [PricingCardDef];
+
+// The editor is driven by PageHub.init() (the imperative API) mounted into a
+// ref. init() injects the runtime Tailwind compiler + theme; the React
+// <PageHubEditor> component does not, so this is the reliable way to embed a
+// fully-styled editor in a host app today.
+function Editor() {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const editor = PageHub.init({
+      container: el,
+      components: customComponents,
+      callbacks: {
+        // Seed a starter page on first load so the canvas has a drop target.
+        onLoad: async () => loadPage() ?? { content: SEED_CONTENT },
+        onSave: async (pageData: unknown) => {
+          savePage(pageData);
+          return { ok: true as const, pageId: "home", updatedAt: new Date().toISOString() };
+        },
+      },
+    });
+    return () => editor.destroy();
+  }, []);
+  return <div ref={ref} style={{ height: "100%" }} />;
+}
 
 export default function App() {
   const [mode, setMode] = useState<"edit" | "view">("edit");
-  // Snapshot of saved content handed to the viewer (null = nothing saved yet).
-  const [content, setContent] = useState<unknown>(() => loadPage());
+  // Viewer wants the compressed content STRING (saved page's content, or the seed).
+  const viewContent = () => (loadPage() as { content?: string } | null)?.content ?? SEED_CONTENT;
+  const [content, setContent] = useState<string>(viewContent);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
@@ -32,7 +60,13 @@ export default function App() {
         <button onClick={() => setMode("edit")} disabled={mode === "edit"}>
           Edit
         </button>
-        <button onClick={() => setMode("view")} disabled={mode === "view"}>
+        <button
+          onClick={() => {
+            setContent(viewContent());
+            setMode("view");
+          }}
+          disabled={mode === "view"}
+        >
           View
         </button>
         <span style={{ marginLeft: "auto", opacity: 0.6, fontSize: 13 }}>
@@ -42,21 +76,7 @@ export default function App() {
 
       <div style={{ flex: 1, minHeight: 0 }}>
         {mode === "edit" ? (
-          <PageHubEditor
-            components={customComponents}
-            callbacks={{
-              onLoad: async () => loadPage(),
-              onSave: async (pageData: unknown) => {
-                savePage(pageData);
-                setContent(pageData);
-                return {
-                  ok: true as const,
-                  pageId: "home",
-                  updatedAt: new Date().toISOString(),
-                };
-              },
-            }}
-          />
+          <Editor />
         ) : content ? (
           <PageHubViewer content={content} components={customComponents} />
         ) : (

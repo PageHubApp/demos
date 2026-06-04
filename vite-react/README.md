@@ -12,23 +12,37 @@ pnpm install   # once, from the repo root
 pnpm --filter @pagehub-demos/vite-react dev   # http://localhost:4401
 ```
 
-## The three files that matter
+## The files that matter
 
 | File | Role |
 | --- | --- |
 | [`src/PricingCard.tsx`](./src/PricingCard.tsx) | Plain React component. No PageHub imports. Renders in editor + viewer + static. |
 | [`src/PricingCardDef.tsx`](./src/PricingCardDef.tsx) | The `defineComponent({...})` call — name, defaults, inspector schema, `toHTML`. |
-| [`src/App.tsx`](./src/App.tsx) | Host wiring — the same `components={[PricingCardDef]}` array goes to `<PageHubEditor>` and `<PageHubViewer>`. |
+| [`src/App.tsx`](./src/App.tsx) | Host wiring — mounts the editor via `PageHub.init()` and the read-only `<PageHubViewer>`, both with the same `components: [PricingCardDef]`. |
+| [`src/seed.ts`](./src/seed.ts) | A compressed starter page so the editor opens with a real drop target. |
 
 Define once, render everywhere: the **same** `components` array feeds the editor,
-the viewer, and `renderToHTML()` from `@pagehub/sdk/html`.
+the viewer, and `renderToHTML()` from `@pagehub/sdk/render/static`.
+
+## Runtime Tailwind (required for the editor)
+
+The editor compiles Tailwind classes in the browser, so it needs two assets served
+at the site root — they're committed in [`public/vendor/`](./public/vendor):
+
+- `/vendor/tailwind-browser.js` — the runtime Tailwind compiler
+- `/vendor/daisyui-blocks.css` — the DaisyUI component CSS
+
+`PageHub.init()` injects them automatically (it's why the editor is mounted via
+`init()` into a ref rather than the `<PageHubEditor>` React component, which does
+not inject the runtime compiler). `import "@pagehub/sdk/editor.css"` covers the
+rest of the chrome.
 
 ## Going to production
 
 - Replace [`src/storage.ts`](./src/storage.ts) (localStorage) with `fetch()` calls
   to your backend in `onLoad` / `onSave`.
 - For server-rendered published pages, call `renderToHTML(content, { components })`
-  from `@pagehub/sdk/html` on the server instead of mounting the viewer client-side.
+  from `@pagehub/sdk/render/static` on the server instead of mounting the viewer client-side.
 
 ## Note on dependencies
 
