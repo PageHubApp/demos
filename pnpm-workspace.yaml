@@ -1,0 +1,4 @@
+packages:
+  - "vanilla-html"
+  - "vite-react"
+  - "nextjs"

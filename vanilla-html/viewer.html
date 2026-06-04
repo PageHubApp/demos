@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PageHub SDK — Viewer Demo</title>
+    <link rel="stylesheet" href="https://unpkg.com/@pagehub/sdk/dist/editor.css" />
+    <style>
+      body {
+        margin: 0;
+        font-family: system-ui, sans-serif;
+      }
+      .demo-bar {
+        padding: 12px 24px;
+        background: #1e293b;
+        color: #e2e8f0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .demo-bar h1 {
+        font-size: 16px;
+        font-weight: 700;
+        margin: 0;
+      }
+      .demo-bar a {
+        color: #94a3b8;
+        font-size: 13px;
+        text-decoration: none;
+      }
+      .demo-bar a:hover {
+        color: #e2e8f0;
+      }
+      #viewer {
+        width: 100%;
+        min-height: calc(100vh - 48px);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="demo-bar">
+      <h1>Viewer Demo</h1>
+      <a href="./index.html">&larr; Editor</a>
+      <a href="./static.html">Static Export &rarr;</a>
+    </div>
+    <div id="viewer"></div>
+
+    <!-- Demo data (classic script — sets window.DEMO_TEMPLATE before the module runs). -->
+    <script src="./template-data-umd.js"></script>
+
+    <!--
+      Viewer loaded as ESM from esm.sh. react / react-dom are pinned to the exact
+      version esm.sh resolves for the SDK so there's a single React instance
+      (mismatched copies → "Invalid hook call").
+    -->
+    <script type="importmap">
+      {
+        "imports": {
+          "@pagehub/sdk/viewer": "https://esm.sh/@pagehub/sdk/viewer",
+          "react": "https://esm.sh/react@19",
+          "react-dom/client": "https://esm.sh/react-dom@19/client"
+        }
+      }
+    </script>
+    <script type="module">
+      import { createElement } from "react";
+      import { createRoot } from "react-dom/client";
+      import { PageHubViewer } from "@pagehub/sdk/viewer";
+
+      // PageHubViewer renders saved content in read-only mode — no editor UI,
+      // smaller bundle, Tailwind compiled at runtime.
+      createRoot(document.getElementById("viewer")).render(
+        createElement(PageHubViewer, { content: window.DEMO_TEMPLATE || "" })
+      );
+    </script>
+  </body>
+</html>

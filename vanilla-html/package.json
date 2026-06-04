@@ -1,0 +1,13 @@
+{
+  "name": "@pagehub-demos/vanilla-html",
+  "version": "0.0.0",
+  "private": true,
+  "description": "PageHub SDK embedded in a plain HTML page — no framework, no build step. SDK loaded from unpkg.",
+  "scripts": {
+    "dev": "serve -l 4400 .",
+    "start": "serve -l 4400 ."
+  },
+  "devDependencies": {
+    "serve": "^14.2.4"
+  }
+}

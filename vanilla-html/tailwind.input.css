@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+@reference "../src/css/styles.css";
+
+@source "./";
+@source "../src/";
