@@ -21,7 +21,7 @@
     "@headlessui/react": "^2.2.10",
     "@hello-pangea/color-picker": "^3.2.2",
     "@lezer/highlight": "^1.2.3",
-    "@pagehub/sdk": "latest",
+    "@pagehub/sdk": "^0.1.7",
     "@tailwindcss/browser": "^4.2.2",
     "@tiptap/core": "^3.22.3",
     "@tiptap/extension-bold": "^3.22.3",

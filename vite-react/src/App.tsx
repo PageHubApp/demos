@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import PageHub from "@pagehub/sdk";
 import { PageHubViewer } from "@pagehub/sdk/viewer";
+import "@pagehub/sdk/theme.css"; // base palette (--base-100 etc.) at :root — the chrome reads it
 import "@pagehub/sdk/editor.css";
-import "./editor-tokens.css"; // editor-chrome vars (--sidebar, etc.) editor.css doesn't ship
 
 import { PricingCardDef } from "./PricingCardDef";
 import { loadPage, savePage } from "./storage";

@@ -44,8 +44,8 @@ importers:
         specifier: ^1.2.3
         version: 1.2.3
       '@pagehub/sdk':
-        specifier: latest
-        version: 0.1.6(kskvxyadadbl5tv5rss5f3fxo4)
+        specifier: ^0.1.7
+        version: 0.1.7(kskvxyadadbl5tv5rss5f3fxo4)
       '@tailwindcss/browser':
         specifier: ^4.2.2
         version: 4.3.0
@@ -204,8 +204,8 @@ importers:
         specifier: ^1.2.3
         version: 1.2.3
       '@pagehub/sdk':
-        specifier: latest
-        version: 0.1.6(kskvxyadadbl5tv5rss5f3fxo4)
+        specifier: ^0.1.7
+        version: 0.1.7(kskvxyadadbl5tv5rss5f3fxo4)
       '@tailwindcss/browser':
         specifier: ^4.2.2
         version: 4.3.0
@@ -886,8 +886,8 @@ packages:
     peerDependencies:
       daisyui: '>=5.0.0'
 
-  '@pagehub/sdk@0.1.6':
-    resolution: {integrity: sha512-lPprJk0zjFy4/Cb2XZDiICD8inUPzt7EpgjOKC1ZLYQAxJa4yGx1uDcgrBYyovL4XQ8Os8VKHLlXe8vooD8elg==}
+  '@pagehub/sdk@0.1.7':
+    resolution: {integrity: sha512-IRLf8qqlEBUeg0A3kq028PAD+KoI9Nj9rUDNJtKXmSyfQzRsB3sHTZYuU6IYrtxu0jHat2xMjGjCjCGox7P6VA==}
     engines: {node: '>=18'}
     peerDependencies:
       '@codemirror/autocomplete': ^6.20.1
@@ -2854,7 +2854,7 @@ snapshots:
     dependencies:
       daisyui: 5.5.20
 
-  '@pagehub/sdk@0.1.6(kskvxyadadbl5tv5rss5f3fxo4)':
+  '@pagehub/sdk@0.1.7(kskvxyadadbl5tv5rss5f3fxo4)':
     dependencies:
       '@craftjs/core': '@pagehub/craftjs-core@0.2.27(react@19.2.7)'
       '@craftjs/utils': '@pagehub/craftjs-utils@0.2.7(react@19.2.7)'

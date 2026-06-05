@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import "./editor-tokens.css"; // editor-chrome vars (--sidebar, etc.) editor.css doesn't ship
+import "@pagehub/sdk/theme.css"; // base palette (--base-100 etc.) at :root — the chrome reads it
 
 export const metadata = {
   title: "PageHub SDK — Next.js demo",
