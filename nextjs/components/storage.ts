@@ -1,18 +1,47 @@
-// In-browser mock "database" backed by localStorage. Stands in for the API
-// calls a real host app would make in onLoad / onSave. Swap these two helpers
-// for fetch() against your backend in production.
+/** Storage for the demo: the engine's memory storage, with every save copied to localStorage so edits survive a reload. */
+import { memoryStorage, type StorageDef } from "@pagehub/engine";
+import { SITE_FILES } from "./site";
 
-const KEY = "pagehub-demo:home";
+const KEY = "pagehub-demo:nextjs";
 
-export function loadPage(): unknown | null {
+function load(): Record<string, string> {
   try {
-    const raw = localStorage.getItem(KEY);
-    return raw ? JSON.parse(raw) : null;
+    const saved = localStorage.getItem(KEY);
+    if (saved) return JSON.parse(saved);
   } catch {
-    return null;
+    // unreadable or blocked: start from the sample
+  }
+  return { ...SITE_FILES };
+}
+
+export function resetSite() {
+  try {
+    localStorage.removeItem(KEY);
+  } catch {
+    // blocked: nothing to clear
   }
 }
 
-export function savePage(pageData: unknown): void {
-  localStorage.setItem(KEY, JSON.stringify(pageData));
+export function browserStorage(): StorageDef {
+  const memory = memoryStorage(load());
+  const persist = () => {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(memory.snapshot()));
+    } catch {
+      // quota or private mode: the edit stays in this tab only
+    }
+  };
+  return {
+    ...memory,
+    async write(...args: Parameters<typeof memory.write>) {
+      const result = await memory.write(...args);
+      if (result.ok) persist();
+      return result;
+    },
+    async writeBatch(...args: Parameters<NonNullable<typeof memory.writeBatch>>) {
+      const result = await memory.writeBatch!(...args);
+      if (result.ok) persist();
+      return result;
+    },
+  };
 }

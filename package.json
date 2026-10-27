@@ -2,16 +2,15 @@
   "name": "pagehub-demos",
   "version": "0.0.0",
   "private": true,
-  "description": "Runnable example integrations of the @pagehub/sdk page builder across stacks.",
+  "description": "Runnable examples of the @pagehub/editor visual editor across stacks.",
   "scripts": {
     "dev:vanilla": "pnpm --filter @pagehub-demos/vanilla-html dev",
     "dev:vite": "pnpm --filter @pagehub-demos/vite-react dev",
     "dev:next": "pnpm --filter @pagehub-demos/nextjs dev",
-    "build": "pnpm -r --filter ./vite-react --filter ./nextjs build",
-    "typecheck": "pnpm -r --filter ./vite-react --filter ./nextjs typecheck"
+    "build": "pnpm -r --filter ./vite-react --filter ./nextjs build"
   },
   "packageManager": "pnpm@9.15.0",
   "engines": {
-    "node": ">=18.18"
+    "node": ">=22"
   }
 }

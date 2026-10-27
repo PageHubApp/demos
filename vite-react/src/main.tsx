@@ -1,6 +1,28 @@
-import ReactDOM from "react-dom/client";
-import App from "./App";
+import { useMemo } from "react";
+import { createRoot } from "react-dom/client";
+import { Editor, type CanvasHost } from "@pagehub/editor";
+import { MediaManager } from "@pagehub/editor/components";
+import "@pagehub/editor/styles.css";
+import { browserStorage, resetSite } from "./storage";
+import { siteCss } from "./siteCss";
 
-// NOTE: No <React.StrictMode> — it double-invokes effects in dev, which would
-// init() the editor twice into the same container.
-ReactDOM.createRoot(document.getElementById("root")!).render(<App />);
+const canvasHost: CanvasHost = { siteCss };
+
+function App() {
+  const storage = useMemo(browserStorage, []);
+  return (
+    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+      <header style={{ display: "flex", alignItems: "center", gap: 12, padding: "6px 12px", font: "13px system-ui", background: "#f6f6f4", color: "#1c1c1a", borderBottom: "1px solid #ddd" }}>
+        <strong>PageHub editor · Vite + React</strong>
+        <span style={{ opacity: 0.6 }}>Edits are saved in this browser.</span>
+        <span style={{ flex: 1 }} />
+        <button type="button" onClick={() => (resetSite(), location.reload())}>Start over</button>
+      </header>
+      <div style={{ flex: 1, minHeight: 0 }}>
+        <Editor storage={storage} canvasHost={canvasHost} components={{ MediaManager }} />
+      </div>
+    </div>
+  );
+}
+
+createRoot(document.getElementById("root")!).render(<App />);

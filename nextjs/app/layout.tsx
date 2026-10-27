@@ -1,15 +1,11 @@
 import type { ReactNode } from "react";
-import "@pagehub/sdk/theme.css"; // base palette (--base-100 etc.) at :root — the chrome reads it
 
-export const metadata = {
-  title: "PageHub SDK — Next.js demo",
-  description: "PageHub SDK embedded in a Next.js App Router app.",
-};
+export const metadata = { title: "PageHub editor · Next.js" };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
-      <body style={{ margin: 0, fontFamily: "system-ui, sans-serif" }}>{children}</body>
+    <html lang="en" data-theme="light">
+      <body style={{ height: "100vh", margin: 0 }}>{children}</body>
     </html>
   );
 }
